@@ -84,9 +84,9 @@ creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
 client = gspread.authorize(creds)
 
 # 2. Connect to sheets
-sheet1 = client.open_by_url("https://docs.google.com/spreadsheets/d/1a6gdPuWWeIqcdw5YnUQBHppHt_OkZ2yNw_Fi5iPhSvg/edit?gid=0#gid=0").worksheet("Raw Data")
-sheet2 = client.open_by_url("https://docs.google.com/spreadsheets/d/1s8Xzfr3OdD1Ty3HScdVUB9bNHQxXtwGf0N7HnztNFfM/edit?gid=1179090678#gid=1179090678").worksheet("RAW DATA")
-dest_sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1VfbKcNo8In9poUbsKKnZ-xjD3WZ3u0iXV6fKiR8OU6o/edit?gid=0#gid=0").worksheet("Merged Raw")
+sheet1 = client.open_by_url("https://docs.google.com/spreadsheets/d/1a6gdPuWWeIqcdw5YnUQBHppHt_OkZ2yNw_Fi5iPhSvg/edit?gid=0#gid=0").worksheet("Raw SKU Data")
+sheet2 = client.open_by_url("https://docs.google.com/spreadsheets/d/1s8Xzfr3OdD1Ty3HScdVUB9bNHQxXtwGf0N7HnztNFfM/edit?gid=1513810737#gid=1513810737").worksheet("RAW SKU DATA")
+dest_sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1zkzqgapuj9Wlww-xOW2KUI7L_r5m329NXDIXBvvFo4E/edit?gid=0#gid=0").worksheet("Merged SKU")
 
 # 3. Pull data
 print("Downloading data...")
@@ -94,7 +94,7 @@ data1 = sheet1.get_all_values()
 data2 = sheet2.get_all_values()
 
 # Create DataFrames
-df1 = pd.DataFrame(data1[8808:], columns=data1[0])
+df1 = pd.DataFrame(data1[1:], columns=data1[0])
 df2 = pd.DataFrame(data2[1:], columns=data2[0])
 
 print("Converting text numbers to native floats...")
