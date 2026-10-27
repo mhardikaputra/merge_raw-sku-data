@@ -85,7 +85,7 @@ client = gspread.authorize(creds)
 
 # 2. Connect to sheets
 sheet1 = client.open_by_url("https://docs.google.com/spreadsheets/d/1a6gdPuWWeIqcdw5YnUQBHppHt_OkZ2yNw_Fi5iPhSvg/edit?gid=0#gid=0").worksheet("Raw SKU Data")
-sheet2 = client.open_by_url("https://docs.google.com/spreadsheets/d/1s8Xzfr3OdD1Ty3HScdVUB9bNHQxXtwGf0N7HnztNFfM/edit?gid=1513810737#gid=1513810737").worksheet("RAW SKU DATA")
+sheet2 = client.open_by_url("https://docs.google.com/spreadsheets/d/1s8Xzfr3OdD1Ty3HScdVUB9bNHQxXtwGf0N7HnztNFfM/edit?gid=0#gid=0").worksheet("RAW SKU DATA")
 dest_sheet = client.open_by_url("https://docs.google.com/spreadsheets/d/1zkzqgapuj9Wlww-xOW2KUI7L_r5m329NXDIXBvvFo4E/edit?gid=0#gid=0").worksheet("Merged SKU")
 
 # 3. Pull data
