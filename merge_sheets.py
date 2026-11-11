@@ -71,6 +71,9 @@ def apply_elementwise(df, func):
     else:
         return df.applymap(func)
 
+# ★ CHANGE 1: Define which column is the SKU (update the name if yours is different) ★
+SKU_COL = "SKU"
+
 # 1. Load credentials securely from GitHub Secret
 creds_json = os.environ.get('GCP_CREDENTIALS')
 creds_dict = json.loads(creds_json)
@@ -97,9 +100,19 @@ data2 = sheet2.get_all_values()
 df1 = pd.DataFrame(data1[1:], columns=data1[0])
 df2 = pd.DataFrame(data2[1:], columns=data2[0])
 
+# ★ CHANGE 2: Parse numbers on all columns EXCEPT SKU, then force SKU to text ★
 print("Converting text numbers to native floats...")
-df1 = apply_elementwise(df1, parse_number)
-df2 = apply_elementwise(df2, parse_number)
+cols_to_parse = [c for c in df1.columns if c != SKU_COL]
+
+df1[cols_to_parse] = df1[cols_to_parse].map(parse_number)
+df2[cols_to_parse] = df2[cols_to_parse].map(parse_number)
+
+df1[SKU_COL] = df1[SKU_COL].astype(str)
+df2[SKU_COL] = df2[SKU_COL].astype(str)
+
+# ★ CHANGE 3: Add source labels (rightmost column) ★
+df1["Source"] = "Rocket"
+df2["Source"] = "Papero"
 
 merged_df = pd.concat([df1, df2], ignore_index=True)
 
@@ -138,7 +151,7 @@ current_rows = dest_sheet.row_count
 if total_rows_needed > current_rows:
     dest_sheet.add_rows(total_rows_needed - current_rows)
 
-# 5. Upload to destination in chunks with USER_ENTERED option
+# 5. Upload to destination in chunks
 print(f"Preparing to upload {len(upload_data) - 1} data rows...")
 dest_sheet.clear()
 
@@ -147,8 +160,9 @@ for i in range(0, len(upload_data), chunk_size):
     chunk = upload_data[i:i + chunk_size]
     start_row = i + 1
     
-    dest_sheet.update(range_name=f'A{start_row}', values=chunk, value_input_option='USER_ENTERED')
+    # ★ CHANGE 4: Use RAW so Sheets doesn't re-interpret SKUs as dates ★
+    dest_sheet.update(range_name=f'A{start_row}', values=chunk, value_input_option='RAW')
     print(f"Uploaded rows {start_row} to {start_row + len(chunk) - 1}")
     time.sleep(2)
 
-print("Success! Sheets merged and uploaded with forced numeric types.")
+print("Success! Sheets merged and uploaded.")
